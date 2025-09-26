@@ -6,4 +6,5 @@ export interface User {
   token: string,
   validAt: Date | null,
   createdAt: Date,
+  freeQuota: number | null,
 }

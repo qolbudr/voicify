@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Users` ADD COLUMN `freeQuota` INTEGER NULL DEFAULT 5;

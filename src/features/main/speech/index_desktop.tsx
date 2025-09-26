@@ -46,7 +46,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
 
   const generateSpeech = async () => {
     try {
-      if (ref.current?.value === "") return toast.error("Please Enter Text to Generate Speech", { position: 'top-center' });
+      if (ref.current?.value === "") return toast.error("Masukkan Teks untuk Mengenerate Suara", { position: 'top-center' });
       setLoading(true);
       const response = await apiV1<BaseResponse<Generated>>({
         method: 'POST',
@@ -67,12 +67,18 @@ export const SpeechDesktop = (): React.JSX.Element => {
   const handleCopy = () => {
     if (user?.id) {
       navigator.clipboard.writeText(user.id);
-      toast.success("User ID Copied to Clipboard", { position: 'top-center' });
+      toast.success("Berhasil menyalin ID Pengguna", { position: 'top-center' });
     }
   }
 
   const contactOwner = () => {
     window.open("https://wa.me/+6283809947465?text=Halo saya ingin berlangganan voicify 20K", "_blank");
+  }
+
+  const getProgressValue = (): number => {
+    const value = diffInDays();
+    if (value < 0) return 100;
+    return Math.floor((value / 30) * 100) > 100 ? 100 : Math.floor((value / 30) * 100);
   }
 
   return <>
@@ -84,7 +90,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
               onChange={(e) => setValue(e.target.value)}
               ref={ref}
               className="w-full h-auto max-w-[280px] rounded-none text-center md:max-w-3xl border-0 text-md md:text-xl lg:text-3xl md:p-4 lg:p-8 border-none outline-none shadow-none focus:ring-0"
-              placeholder="Enter your desired text here..."
+              placeholder="Masukkan teks yang diinginkan di sini..."
               maxLength={1000}
               rows={1}
             />
@@ -106,19 +112,19 @@ export const SpeechDesktop = (): React.JSX.Element => {
                     <Button variant="outline" onClick={handleCopy} className="ml-auto size-10 cursor-pointer"><Copy /></Button>
                     <Button onClick={LogOutHandler} variant="default" className="size-10 cursor-pointer"><LogOut /></Button>
                   </div>
-                  <Progress value={Math.floor((30 - diffInDays()) / 100)} className="w-full mt-4" />
+                  <Progress value={getProgressValue()} className="w-full mt-4" />
                   <div className="flex items-center justify-between mt-2">
                     <Label className="text-xs">Expired In</Label>
                     <Label className="text-xs font-semibold">{diffInDays()} Days</Label>
                   </div>
-                  <Button variant="outline" onClick={contactOwner} className="w-full mt-4 cursor-pointer"><PhoneCall /> Contact Owner</Button>
+                  <Button variant="outline" onClick={contactOwner} className="w-full mt-4 cursor-pointer"><PhoneCall /> Hubungi Owner</Button>
                 </div>
                 <div className="p-4 rounded-md border border-gray-200 mb-4">
-                  <Label className="text-lg mb-4">Configuration</Label>
-                  <Label htmlFor="voice" className="mb-2">Select Voice</Label>
+                  <Label className="text-lg mb-4">Pengaturan</Label>
+                  <Label htmlFor="voice" className="mb-2">Pilih Suara</Label>
                   <Select onValueChange={(v) => setVoice(v)} value={selectedVoice}>
                     <SelectTrigger className="w-full mb-4">
-                      <SelectValue placeholder="Select Voice" />
+                      <SelectValue placeholder="Pilih Suara" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -134,7 +140,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
                     </SelectContent>
                   </Select>
                   <div className="flex items-center justify-between mb-4">
-                    <Label>Speed</Label>
+                    <Label>Kecepatan</Label>
                     <Label className="text-sm font-normal">{speed}x</Label>
                   </div>
                   <Slider className="mb-4" min={0} onValueChange={(v) => setSpeed(v[0])} defaultValue={[speed]} max={2} step={0.1} />
@@ -142,7 +148,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
                 {
                   audioUrl && (
                     <div className="flex-1 space-y-2">
-                      <Label htmlFor="video-voice">Voice</Label>
+                      <Label htmlFor="video-voice">Suara</Label>
                       <audio
                         className="w-full"
                         src={audioUrl}
@@ -158,7 +164,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
               <div className="w-full">
                 <Button onClick={generateSpeech} type="submit" className="cursor-pointer w-full">
                   {loading ? <Loader2Icon className="animate-spin" /> : null}
-                  Generate Speech
+                  Generate Suara
                 </Button>
               </div>
             </CardContent>

@@ -25,7 +25,7 @@ export const google = async (req: Request, res: Response) => {
     });
 
     const payload = ticket.getPayload();
-    if (!payload) return res.status(400).json({ message: "Internal Server Error", error: "Payload not found" });
+    if (!payload) return res.status(400).json({ message: "Internal Server Error", error: "Payload Tidak Ditemukan" });
 
     let user = await prisma.users.findUnique({ where: { email: payload.email } });
     if (!user) {
@@ -48,7 +48,7 @@ export const google = async (req: Request, res: Response) => {
       });
     }
 
-    res.status(200).json({ message: "Login Successful", data: user });
+    res.status(200).json({ message: "Login Berhasil", data: user });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error", error: `${error}` });
   }

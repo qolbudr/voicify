@@ -8,11 +8,12 @@ datasource db {
 }
 
 model Users {
-  id      String    @unique
-  name    String
-  email   String    @unique
-  photo   String 
-  token   String    @db.Text 
-  validAt DateTime? 
-  createdAt DateTime @default(now())
+  id        String     @unique
+  name      String
+  email     String     @unique
+  photo     String 
+  token     String     @db.Text 
+  validAt   DateTime? 
+  freeQuota Int?       @default(5)
+  createdAt DateTime   @default(now())
 }

@@ -10,7 +10,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { mainRoutes } from './features/main/main_routes';
 
 createRoot(document.getElementById('root')!).render(
-  // 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
   <StrictMode>
     <StorageProvider>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">

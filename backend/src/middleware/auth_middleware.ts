@@ -16,29 +16,29 @@ export async function authMiddleware(req: AuthRequest, res: Response, next: Next
   const timestamp = req.headers.timestamp as string | undefined;
 
   if (!authHeader) {
-    return res.status(401).json({ message: "Unauthorized", error: "No token provided" });
+    return res.status(401).json({ message: "Unauthorized", error: "Token Tidak Ditemukan" });
   }
 
   if (!signature) {
-    return res.status(403).json({ message: "Forbidden", error: "No signature provided" });
+    return res.status(403).json({ message: "Forbidden", error: "Signature Tidak Ditemukan" });
   }
 
   if (!timestamp) {
-    return res.status(403).json({ message: "Forbidden", error: "No timestamp provided" });
+    return res.status(403).json({ message: "Forbidden", error: "Timestamp Tidak Ditemukan" });
   }
 
   if (timestamp && (Math.abs(Date.now() - parseInt(timestamp)) > 1 * 60 * 1000)) {
-    return res.status(403).json({ message: "Forbidden", error: "Timestamp is too old" });
+    return res.status(403).json({ message: "Forbidden", error: "Timestamp Terlalu Lama" });
   }
 
   const check = CryptoJS.HmacSHA256(timestamp, process.env.SIGNATURE_SECRET!).toString(CryptoJS.enc.Hex);
   if (check !== signature) {
-    return res.status(403).json({ message: "Forbidden", error: "Invalid signature" });
+    return res.status(403).json({ message: "Forbidden", error: "Signature Tidak Valid" });
   }
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return res.status(401).json({ message: "Bad Format", error: "Invalid authorization format" });
+    return res.status(401).json({ message: "Bad Format", error: "Format Otorisasi Tidak Valid" });
   }
 
   const token = parts[1];
@@ -48,17 +48,19 @@ export async function authMiddleware(req: AuthRequest, res: Response, next: Next
     req.user = decoded;
 
     const user = await prisma.users.findUnique({ where: { id: decoded.id } });
-    
-    if(user?.validAt == null) {
-      return res.status(403).json({ message: "Forbidden", error: "Subscription ended contact owner" })
-    } else {
-      if(user.validAt < new Date()) {
-        return res.status(403).json({ message: "Forbidden", error: "Subscription ended contact owner" })
+
+    if (user?.freeQuota != null && user.freeQuota <= 0) {
+      if (user?.validAt == null) {
+        return res.status(403).json({ message: "Forbidden", error: "Langganan Berakhir Hubungi Owner" })
+      } else {
+        if (user.validAt < new Date()) {
+          return res.status(403).json({ message: "Forbidden", error: "Langganan Berakhir Hubungi Owner" })
+        }
       }
     }
 
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Unauthorized", error: "Invalid or expired token" });
+    return res.status(401).json({ message: "Unauthorized", error: "Token Tidak Valid" });
   }
 }
