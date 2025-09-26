@@ -39,6 +39,8 @@ export const SpeechDesktop = (): React.JSX.Element => {
     const now = new Date();
     const validAt = user?.validAt ? new Date(user.validAt) : now;
 
+    if (validAt < now) return 0;
+
     const diffTime = Math.abs(validAt.getTime() - now.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
@@ -79,8 +81,10 @@ export const SpeechDesktop = (): React.JSX.Element => {
   }
 
   const getProgressValue = (): number => {
+    const now = new Date();
     const value = diffInDays();
-    if (value < 0) return 100;
+    const validAt = user?.validAt ? new Date(user.validAt) : now;
+    if (validAt < now) return 0;
     return Math.floor((value / 30) * 100) > 100 ? 100 : Math.floor((value / 30) * 100);
   }
 
