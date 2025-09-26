@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useStorage } from "@/core/provider/storage_provider"
-import { Copy, Loader2Icon, LogOut } from "lucide-react"
+import { Copy, Loader2Icon, LogOut, PhoneCall } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import React, { useEffect, useRef, useState } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -46,7 +46,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
 
   const generateSpeech = async () => {
     try {
-      if(ref.current?.value === "") return toast.error("Please Enter Text to Generate Speech", { position: 'top-center' });
+      if (ref.current?.value === "") return toast.error("Please Enter Text to Generate Speech", { position: 'top-center' });
       setLoading(true);
       const response = await apiV1<BaseResponse<Generated>>({
         method: 'POST',
@@ -62,6 +62,17 @@ export const SpeechDesktop = (): React.JSX.Element => {
     } finally {
       setLoading(false);
     }
+  }
+
+  const handleCopy = () => {
+    if (user?.id) {
+      navigator.clipboard.writeText(user.id);
+      toast.success("User ID Copied to Clipboard", { position: 'top-center' });
+    }
+  }
+
+  const contactOwner = () => {
+    window.open("https://wa.me/+6283809947465?text=Halo saya ingin berlangganan voicify 20K", "_blank");
   }
 
   return <>
@@ -92,7 +103,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
                       <div className="text-md font-semibold">{user?.name}</div>
                       <div className="text-xs line-clamp-1 text-neutral-700">{user?.id}</div>
                     </div>
-                    <Button variant="outline" className="ml-auto size-10 cursor-pointer"><Copy /></Button>
+                    <Button variant="outline" onClick={handleCopy} className="ml-auto size-10 cursor-pointer"><Copy /></Button>
                     <Button onClick={LogOutHandler} variant="default" className="size-10 cursor-pointer"><LogOut /></Button>
                   </div>
                   <Progress value={Math.floor((30 - diffInDays()) / 100)} className="w-full mt-4" />
@@ -100,6 +111,7 @@ export const SpeechDesktop = (): React.JSX.Element => {
                     <Label className="text-xs">Expired In</Label>
                     <Label className="text-xs font-semibold">{diffInDays()} Days</Label>
                   </div>
+                  <Button variant="outline" onClick={contactOwner} className="w-full mt-4 cursor-pointer"><PhoneCall /> Contact Owner</Button>
                 </div>
                 <div className="p-4 rounded-md border border-gray-200 mb-4">
                   <Label className="text-lg mb-4">Configuration</Label>

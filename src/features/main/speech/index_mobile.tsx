@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useStorage } from "@/core/provider/storage_provider"
-import { Copy, Loader2Icon, LogOut } from "lucide-react"
+import { Copy, Loader2Icon, LogOut, PhoneCall } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import React, { useRef, useState } from "react"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -55,6 +55,17 @@ export const SpeechMobile = (): React.JSX.Element => {
     }
   }
 
+  const handleCopy = () => {
+    if (user?.id) {
+      navigator.clipboard.writeText(user.id);
+      toast.success("User ID Copied to Clipboard", { position: 'top-center' });
+    }
+  }
+
+  const contactOwner = () => {
+    window.open("https://wa.me/+6283809947465?text=Halo saya ingin berlangganan voicify 20K", "_blank");
+  }
+
   return <>
     <div className="w-dvw h-dvh">
       <div className="flex gap-0 items-stretch h-full">
@@ -69,7 +80,7 @@ export const SpeechMobile = (): React.JSX.Element => {
                   <div className="text-md font-semibold">{user?.name}</div>
                   <div className="text-xs line-clamp-1 text-neutral-700">{user?.id}</div>
                 </div>
-                <Button variant="outline" className="ml-auto size-10 cursor-pointer"><Copy /></Button>
+                <Button variant="outline" onClick={handleCopy} className="ml-auto size-10 cursor-pointer"><Copy /></Button>
                 <Button onClick={LogOutHandler} variant="default" className="size-10 cursor-pointer"><LogOut /></Button>
               </div>
               <Progress value={Math.floor((30 - diffInDays()) / 100)} className="w-full mt-4" />
@@ -77,6 +88,7 @@ export const SpeechMobile = (): React.JSX.Element => {
                 <Label className="text-xs">Expired In</Label>
                 <Label className="text-xs font-semibold">{diffInDays()} Days</Label>
               </div>
+              <Button variant="outline" onClick={contactOwner} className="w-full mt-4 cursor-pointer"><PhoneCall /> Contact Owner</Button>
             </div>
             <div className="flex-1 flex items-center">
               <textarea
@@ -85,7 +97,7 @@ export const SpeechMobile = (): React.JSX.Element => {
                 placeholder="Enter your desired text here..."
                 maxLength={1000}
                 rows={6}
-                
+
               />
             </div>
             <div className="p-4 rounded-md border border-gray-200 my-4">
