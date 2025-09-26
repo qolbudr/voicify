@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import CryptoJS from "crypto-js";
 import { PrismaClient } from "@prisma/client";
 
-const appSecret = process.env.JWT_SECRET || "supersecretkey";
+const appSecret = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 
 export interface AuthRequest extends Request {
@@ -44,7 +44,7 @@ export async function authMiddleware(req: AuthRequest, res: Response, next: Next
   const token = parts[1];
 
   try {
-    const decoded = jwt.verify(token, appSecret) as { id: string, email: string, validAt: Date };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload & { id: string, email: string, validAt: Date };
     req.user = decoded;
 
     const user = await prisma.users.findUnique({ where: { id: decoded.id } });
