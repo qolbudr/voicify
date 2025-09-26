@@ -48,7 +48,7 @@ export const Login = (): React.JSX.Element => {
                 }}
                 containerProps={
                   {
-                    className: "w-full"
+                    style: {width: '100%'}
                   }
                 }
               />
