@@ -46,6 +46,11 @@ export const Login = (): React.JSX.Element => {
                 onError={() => {
                   console.log('Login Failed');
                 }}
+                containerProps={
+                  {
+                    className: "w-full"
+                  }
+                }
               />
             </div>
             <div className="text-xs text-gray-500 mt-8">By clicking continue, you agree to our Terms of Service and Privacy Policy.</div>
