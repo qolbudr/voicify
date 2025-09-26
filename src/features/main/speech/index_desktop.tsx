@@ -56,6 +56,9 @@ export const SpeechDesktop = (): React.JSX.Element => {
 
       setAudioUrl(response?.data?.path);
       toast.success(response?.message, { position: 'top-center' });
+      if ((user?.freeQuota ?? 0) > 0) {
+        storage?.save({ user: { ...user!, freeQuota: (user?.freeQuota ?? 0) - 1 } });
+      }
     } catch (error) {
       const exception = handleError(error);
       toast.error(exception.error, { position: 'top-center' });
