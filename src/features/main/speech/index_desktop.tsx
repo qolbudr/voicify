@@ -81,6 +81,11 @@ export const SpeechDesktop = (): React.JSX.Element => {
     return Math.floor((value / 30) * 100) > 100 ? 100 : Math.floor((value / 30) * 100);
   }
 
+  const getFreeQuotaProgressValue = (): number => {
+    const quota = user?.freeQuota || 0;
+    return (quota / 5) * 100;
+  }
+
   return <>
     <div className="w-screen h-screen">
       <div className="flex gap-0 items-stretch h-full">
@@ -112,11 +117,20 @@ export const SpeechDesktop = (): React.JSX.Element => {
                     <Button variant="outline" onClick={handleCopy} className="ml-auto size-10 cursor-pointer"><Copy /></Button>
                     <Button onClick={LogOutHandler} variant="default" className="size-10 cursor-pointer"><LogOut /></Button>
                   </div>
-                  <Progress value={getProgressValue()} className="w-full mt-4" />
-                  <div className="flex items-center justify-between mt-2">
-                    <Label className="text-xs">Expired In</Label>
-                    <Label className="text-xs font-semibold">{diffInDays()} Days</Label>
-                  </div>
+                  {(user?.freeQuota ?? 0) === 0 ?
+                    <>
+                      <Progress value={getProgressValue()} className="w-full mt-4" />
+                      <div className="flex items-center justify-between mt-2">
+                        <Label className="text-xs">Expired In</Label>
+                        <Label className="text-xs font-semibold">{diffInDays()} Days</Label>
+                      </div>
+                    </> : <>
+                      <Progress value={getFreeQuotaProgressValue()} className="w-full mt-4" />
+                      <div className="flex items-center justify-between mt-2">
+                        <Label className="text-xs">Free Quota</Label>
+                        <Label className="text-xs font-semibold">{user?.freeQuota}</Label>
+                      </div>
+                    </>}
                   <Button variant="outline" onClick={contactOwner} className="w-full mt-4 cursor-pointer"><PhoneCall /> Hubungi Owner</Button>
                 </div>
                 <div className="p-4 rounded-md border border-gray-200 mb-4">
