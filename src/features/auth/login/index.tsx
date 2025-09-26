@@ -40,12 +40,14 @@ export const Login = (): React.JSX.Element => {
           <div className="text-center max-w-[280px]">
             <div className="text-2xl font-bold mt-8">Voicify</div>
             <div className="text-sm mb-8">Generate text to speech in seconds</div>
-            <GoogleLogin
-              onSuccess={handleLogin}
-              onError={() => {
-                console.log('Login Failed');
-              }}
-            />
+            <div className="w-full">
+              <GoogleLogin
+                onSuccess={handleLogin}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+              />
+            </div>
             <div className="text-xs text-gray-500 mt-8">By clicking continue, you agree to our Terms of Service and Privacy Policy.</div>
           </div>
         </div>

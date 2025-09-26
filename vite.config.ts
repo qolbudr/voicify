@@ -15,6 +15,7 @@ export default defineConfig({
     port: 4173,
     allowedHosts: [
       'voicify.livelift.site',
+      'api-voicify.livelift.site'
     ],
-  }
+  },
 })
